@@ -14,15 +14,15 @@ class Planet(pygame.sprite.Sprite):
     self.radius = random.randint(3, 23)
     self.x = random.randint(100, 1000)
     self.y = random.randint(50, 850)
-    self.velocity_x = random.choice([-1, 1]) / self.radius
-    self.velocity_y = random.choice([-1, 1]) / self.radius
+    self.velocity_x = 0.2
+    self.velocity_y = 0.2
 
   def draw(self, screen):
     pygame.draw.circle(screen, (150, 150, 150), (self.x, self.y), self.radius)
 
 
 all_planets = pygame.sprite.Group()
-for i in range(2):
+for i in range(3):
   planet = Planet()
   all_planets.add(planet)
 
@@ -36,10 +36,11 @@ while run:
 
   screen.fill((0, 0, 0))
 
-  min_distance = 1000
-
   for planet in all_planets:
     planet.draw(screen)
+
+    min_distance = 1000
+    angle = 0
 
     for other in all_planets:
       if other != planet:
