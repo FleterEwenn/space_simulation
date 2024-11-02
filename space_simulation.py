@@ -22,7 +22,7 @@ class Planet(pygame.sprite.Sprite):
 
 
 all_planets = pygame.sprite.Group()
-for i in range(2):
+for i in range(10):
   planet = Planet()
   all_planets.add(planet)
 
