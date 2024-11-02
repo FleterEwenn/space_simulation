@@ -22,7 +22,7 @@ class Planet(pygame.sprite.Sprite):
 
 
 all_planets = pygame.sprite.Group()
-for i in range(3):
+for i in range(2):
   planet = Planet()
   all_planets.add(planet)
 
@@ -44,10 +44,19 @@ while run:
 
     for other in all_planets:
       if other != planet:
+
         d_x = other.x - planet.x
         d_y = other.y - planet.y
 
         distance = math.sqrt(d_x ** 2 + d_y ** 2)
+
+        if distance < other.radius + planet.radius:
+          if planet.radius > other.radius:
+            planet.radius += other.radius
+            other.kill()
+          else:
+            other.radius += planet.radius
+            planet.kill()
 
         if distance < min_distance:
           min_distance = distance
