@@ -15,14 +15,31 @@ class Planet(pygame.sprite.Sprite):
     self.x = random.randint(100, 1000)
     self.y = random.randint(50, 850)
     self.velocity = 0
-    self.G = 1.5
+    self.G = 16
+    self.color = (150, 150, 150)
 
   def draw(self, screen):
-    pygame.draw.circle(screen, (150, 150, 150), (self.x, self.y), self.radius)
+    pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
 
+class Star(pygame.sprite.Sprite):
+  def __init__(self):
+    super().__init__()
+    self.radius = random.randint(5, 10)
+    self.x = random.randint(100, 1000)
+    self.y = random.randint(50, 850)
+    self.color = (150, (255//self.radius)*3, 0)
+    self.life = (1000//self.radius)*5
+
+  def draw(self, screen):
+    pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
+
+all_stars = pygame.sprite.Group()
+for i in range(10):
+  star = Star()
+  all_stars.add(star)
 
 all_planets = pygame.sprite.Group()
-for i in range(50):
+for i in range(10):
   planet = Planet()
   all_planets.add(planet)
 
@@ -33,6 +50,12 @@ while run:
       run = False
 
   screen.fill((0, 0, 0))
+
+  for star in all_stars:
+    star.draw(screen)
+
+    star.life -= 1
+    print(star.life)
 
   for planet in all_planets:
     planet.draw(screen)
@@ -51,10 +74,10 @@ while run:
 
         if distance < other.radius + planet.radius:
           if planet.radius > other.radius:
-            planet.radius += other.radius/2
+            planet.radius += other.radius // 2
             other.kill()
           else:
-            other.radius += planet.radius/2
+            other.radius += planet.radius // 2
             planet.kill()
 
         if distance < min_distance:
