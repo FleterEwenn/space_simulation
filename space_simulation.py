@@ -12,6 +12,7 @@ class Planet(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
     self.radius = random.randint(1, 3)
+    self.ref_solarsys = (False, [0, 0])
     self.x = random.randint(100, 1000)
     self.y = random.randint(50, 850)
     self.velocity = 0
@@ -20,6 +21,16 @@ class Planet(pygame.sprite.Sprite):
 
   def draw(self, screen):
     pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
+
+  def solarsys_move(self):
+    for star in all_stars:
+      if star.solarsys_id == self.ref_solarsys[1][0]:
+        self.y = star.y
+        self.x = star.x
+    star.y += 20 * self.ref_solarsys[1][1]
+    for i in range(20*self.ref_solarsys[1][1]):
+      self.x += 1
+      self.y += 1
 
 class Star(pygame.sprite.Sprite):
   def __init__(self):
@@ -45,12 +56,12 @@ class Star(pygame.sprite.Sprite):
         self.radius += 0.1
         for planet in all_planets:
           if star.y-star.radius == planet.y-planet.radius:
-            planet.kill()
-          if star.y-star.radius == planet.y-planet.radius:
-            planet.kill()
+            if star.x-star.radius == planet.x-planet.radius:
+              planet.kill()
+      self.radius = 4
       self.color = (255, 255, 255)
     else:
-      self.radius = 5
+      self.radius = 4
       self.color = (255, 255, 255)
 
 all_stars = pygame.sprite.Group()
@@ -60,16 +71,16 @@ for i in range(5):
   all_stars.add(star)
 
 all_planets = pygame.sprite.Group()
-'''
+
 for i in range(10):
   planet = Planet()
   all_planets.add(planet)
-  '''
+
 chance_starborn = [1] + 100*[0]
 
 run = True
 while run:
-  print(chance_starborn)
+
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       run = False
@@ -84,8 +95,8 @@ while run:
   for star in all_stars:
     star.draw(screen)
 
-    star.x += 1 * star.velocity
-    star.y += 1  * star.velocity
+    #star.x += 0.1 * star.velocity
+    #star.y += 0.1  * star.velocity
 
     if star.life <= 0:
       chance_starborn.append(0)
@@ -101,6 +112,8 @@ while run:
 
   for planet in all_planets:
     planet.draw(screen)
+
+    planet.solarsys_move()
 
     min_distance = 1000
 
@@ -121,7 +134,7 @@ while run:
           else:
             other.radius += planet.radius // 2
             planet.kill()
-
+'''
         if distance < min_distance:
           min_distance = distance
           angle = math.atan2(d_y, d_x)
@@ -133,5 +146,5 @@ while run:
       planet.velocity *= -1
     if planet.y - planet.radius < 0 or planet.y + planet.radius > 800:
       planet.velocity *= -1
-
+'''
   pygame.display.flip()
